@@ -6,18 +6,23 @@ class Node:
 
 class BuildTree:
     def __init__(self):
-        self.idx = 0
-    def build_tree(self, arr):
-        if self.idx >= len(arr):
-            return None
-        if arr[self.idx] == -1:
-            self.idx += 1
-            return None
-        root = Node(arr[self.idx])
-        self.idx += 1
-        root.left = self.build_tree(arr)
-        root.right = self.build_tree(arr)
-        return root
+        self.root = None
+    def insert(self, data):
+        if self.root is None:
+            self.root = Node(data)
+        else:
+            self.insertRecursion(self.root, data)
+    def insertRecursion(self, node, data):
+        if data < node.data:
+            if node.left is None:
+                node.left = Node(data)
+            else:
+                self.insertRecursion(node.left, data)
+        else:
+            if node.right is None:
+                node.right = Node(data)
+            else:
+                self.insertRecursion(node.right, data)
 
     def is_leaf(self, node):
         return node and not node.left and not node.right
@@ -35,7 +40,6 @@ class BuildTree:
                 temp.append(curr.data)
             curr = curr.right if curr.right else curr.left
         res.extend(temp[::-1])
-
     def leaf_nodes(self, root, res):
         if not root:
             return
@@ -54,9 +58,10 @@ class BuildTree:
         self.leaf_nodes(root.right, res)
         self.right_boundary(root, res)
         return res
-
 arr = list(map(int, input().split()))
 bt = BuildTree()
-root = bt.build_tree(arr)
-result = bt.boundary_traversal(root)
+for v in arr:
+    if v!=-1:
+        bt.insert(v)
+result = bt.boundary_traversal(bt.root)
 print("Boundary Traversal:", *result)
